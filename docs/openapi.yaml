@@ -1,0 +1,221 @@
+openapi: 3.0.1
+info:
+  title: Tunisia D2C Marketplace - Full API (MVP)
+  version: 0.2
+servers:
+  - url: https://api.market.tn/v1
+tags:
+  - name: auth
+  - name: users
+  - name: products
+  - name: cart
+  - name: orders
+  - name: delivery
+  - name: ratings
+  - name: notifications
+  - name: referral
+  - name: subscription
+paths:
+  /auth/otp:
+    post:
+      tags:
+        - auth
+      summary: Send OTP to phone
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, purpose]
+              properties:
+                phone: { type: string, example: "+21698123456" }
+                purpose:
+                  type: string
+                  enum: ["signup","login","checkout"]
+      responses:
+        "200":
+          description: OTP queued
+          content: { application/json: { schema: { $ref: '#/components/schemas/OtpResponse' } } }
+  /auth/verify:
+    post:
+      tags:
+        - auth
+      summary: Verify OTP & issue auth token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, code]
+              properties:
+                phone: { type: string }
+                code: { type: string, example: "123456" }
+      responses:
+        "200":
+          description: verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+  /producer-requests:
+    post:
+      tags:
+        - users
+      summary: Submit a request to become a producer (no automatic approval)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, farm_name_fr]
+              properties:
+                phone: { type: string }
+                farm_name_fr: { type: string }
+                farm_name_ar: { type: string }
+                farm_name_ar_latn: { type: string }
+                district_id: { type: integer }
+                attachments: { type: array, items: { type: string } }
+      responses:
+        "201":
+          description: request created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id: { type: integer }
+                  status: { type: string, example: "pending" }
+  /admin/producers/{id}/approve:
+    post:
+      tags: [users]
+      summary: Admin approves a producer account
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: producer approved
+  /admin/producers/{id}/reject:
+    post:
+      tags: [users]
+      summary: Admin rejects a producer account with reason
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string }
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: producer rejected
+  /products/{id}/submit_for_review:
+    post:
+      tags: [products]
+      summary: Producer submits product for admin review (producer cannot publish)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: submitted for review
+  /admin/products/{id}/approve:
+    post:
+      tags: [products]
+      summary: Admin approves a product, making it visible
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: product approved and published
+  /admin/products/{id}/reject:
+    post:
+      tags: [products]
+      summary: Admin rejects a product with reason
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string }
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: product rejected
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    OtpResponse:
+      type: object
+      properties:
+        status: { type: string, example: "otp_sent" }
+        ttl_seconds: { type: integer, example: 300 }
+    AuthToken:
+      type: object
+      properties:
+        token: { type: string }
+        user: { type: object }
+    ProductSummary:
+      type: object
+      properties:
+        id: { type: integer }
+        name_fr: { type: string }
+        name_ar: { type: string }
+        name_ar_latn: { type: string }
+        thumbnail_url: { type: string }
+        unit: { type: string }
+        price_per_unit: { type: number }
+        currency: { type: string, example: "TND" }
+        rating: { type: number }
+        badges: { type: array, items: { type: string } }
+    PriceBreakdown:
+      type: object
+      properties:
+        product_id: { type: integer }
+        quantity: { type: integer }
+        breakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              key: { type: string }
+              label_fr: { type: string }
+              label_ar: { type: string }
+              amount: { type: number }
+        subtotal: { type: number }
+        total: { type: number }
+        currency: { type: string }

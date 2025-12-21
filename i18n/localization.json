@@ -1,0 +1,10 @@
+{
+  "meta": { "project": "Tunisia D2C Marketplace", "languages": ["fr","ar","ar_latn"], "generated_by": "AI" },
+  "strings": {
+    "app.name": { "fr": "Marché Direct TN", "ar": "السوق المباشر تونس", "ar_latn": "Es-Souq El-Moubashir Tounes" },
+    "nav.home": { "fr": "Accueil", "ar": "الرئيسية", "ar_latn": "Er-Ra'isiya" },
+    "product.add_to_cart": { "fr": "Ajouter au panier", "ar": "أضف إلى السلة", "ar_latn": "Add ila es-salla" },
+    "product.status_pending": { "fr": "Ce produit est en attente d'approbation.", "ar": "هذا المنتج في انتظار الموافقة.", "ar_latn": "Hatha el-montij fi intithar el-mawafaqa" },
+    "producer.request_submitted": { "fr": "Votre demande a été soumise et est en attente.", "ar": "تم إرسال طلبك وهو قيد الانتظار.", "ar_latn": "Tam ersal talabik wa houwa qayd el-intizar" }
+  }
+}

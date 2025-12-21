@@ -1,0 +1,6 @@
+key,fr,ar,ar_latn
+app.name,"Marché Direct TN","السوق المباشر تونس","Es-Souq El-Moubashir Tounes"
+nav.home,Accueil,الرئيسية,Er-Ra'isiya
+product.add_to_cart,"Ajouter au panier","أضف إلى السلة","Add ila es-salla"
+product.status_pending,"Ce produit est en attente d'approbation.","هذا المنتج في انتظار الموافقة.","Hatha el-montij fi intithar el-mawafaqa"
+producer.request_submitted,"Votre demande a été soumise et est en attente.","تم إرسال طلبك وهو قيد الانتظار.","Tam ersal talabik wa houwa qayd el-intizar"
